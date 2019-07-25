@@ -30,7 +30,13 @@ pipeline {
             }
         }
 
-
+        stage('TerraformFormat'){
+            steps {
+                dir('terraform/'){
+                    sh "terraform fmt -list=true -write=false -diff=true -check=true"
+                }
+            }
+        }
 
         stage('TerraformValidate'){
             steps {
@@ -71,6 +77,26 @@ pipeline {
                         dir('terraform/'){
                             unstash "terraform-plan"
                             sh 'terraform apply terraform.tfplan'
+                        }
+                    }
+                }
+            }
+        }
+        stage('TerraformDelete'){
+            steps {
+                script{
+                    def apply = false
+                    try {
+                        input message: 'Can you please confirm the apply', ok: 'Ready to delete'
+                        apply = true
+                    } catch (err) {
+                        apply = false
+                         currentBuild.result = 'UNSTABLE'
+                    }
+                    if(apply){
+                        dir('terraform/'){
+
+                            sh 'terraform destroy'
                         }
                     }
                 }
