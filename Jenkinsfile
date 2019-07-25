@@ -30,13 +30,7 @@ pipeline {
             }
         }
 
-        stage('TerraformFormat'){
-            steps {
-                dir('terraform/'){
-                    sh "terraform fmt -list=true -write=false -diff=true -check=true"
-                }
-            }
-        }
+
 
         stage('TerraformValidate'){
             steps {
