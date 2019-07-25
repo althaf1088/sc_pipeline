@@ -1,0 +1,25 @@
+version: '3'
+services:
+
+# WEB
+  api:
+    env_file:
+      - docker_env
+    build:
+      context: .
+      dockerfile: Dockerfile
+    depends_on:
+      - db
+    ports:
+      - 8000:8000
+
+# Postgres: This should tie with the configuration settings you need to run
+
+  db:
+    image: postgres
+    environment:
+      POSTGRES_PASSWORD: password
+      POSTGRES_USER: postgres
+      POSTGRES_DB: devdb
+    ports:
+      - 5432:5432
