@@ -31,7 +31,7 @@ pipeline {
         }
             stage('Ansible'){
             steps{
-                ansiblePlaybook credentialsId: 'jenkins', installation: 'ansible', playbook: 'ansible/playbook.yml'
+                ansiblePlaybook credentialsId: 'jenkins', installation: 'ansible', playbook: '\/ansible/playbook.yml'
             }
             }
 
