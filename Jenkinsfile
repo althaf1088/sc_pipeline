@@ -4,7 +4,7 @@ pipeline {
         "org.jenkinsci.plugins.terraform.TerraformInstallation" "Terraform"
     }
     parameters {
-        string(name: 'WORKSPACE', defaultValue: 'development', description:'setting up workspace for terraform')
+        string(name: 'WORKSPACE', defaultValue: 'terraform', description:'setting up workspace for terraform')
     }
     environment {
         TF_HOME = tool('Terraform')
@@ -29,79 +29,13 @@ pipeline {
                 }
             }
         }
+            stage('Ansible'){
+            steps{
+                ansiblePlaybook credentialsId: 'jenkins', installation: 'ansible', playbook: '${params.WORKSPACE}/ansible/playbook.yml'
+            }
+            }
 
-        stage('TerraformFormat'){
-            steps {
-                dir('terraform/'){
-                    sh "terraform fmt -list=true -write=false -diff=true -check=true"
-                }
-            }
-        }
-
-        stage('TerraformValidate'){
-            steps {
-                dir('terraform/'){
-                    sh "terraform validate"
-                }
-            }
-        }
-
-        stage('TerraformPlan'){
-            steps {
-                dir('terraform/'){
-                    script {
-                        try {
-                            sh "terraform workspace new ${params.WORKSPACE}"
-                        } catch (err) {
-                            sh "terraform workspace select ${params.WORKSPACE}"
-                        }
-                        sh "terraform plan -var 'access_key=$ACCESS_KEY' -var 'secret_key=$SECRET_KEY' \
-                        -out terraform.tfplan;echo \$? > status"
-                        stash name: "terraform-plan", includes: "terraform.tfplan"
-                    }
-                }
-            }
-        }
-        stage('TerraformApply'){
-            steps {
-                script{
-                    def apply = false
-                    try {
-                        input message: 'Can you please confirm the apply', ok: 'Ready to Apply the Config'
-                        apply = true
-                    } catch (err) {
-                        apply = false
-                         currentBuild.result = 'UNSTABLE'
-                    }
-                    if(apply){
-                        dir('terraform/'){
-                            unstash "terraform-plan"
-                            sh 'terraform apply terraform.tfplan'
-                        }
-                    }
-                }
-            }
-        }
-        stage('TerraformDelete'){
-            steps {
-                script{
-                    def apply = false
-                    try {
-                        input message: 'Can you please confirm the apply', ok: 'Ready to delete'
-                        apply = true
-                    } catch (err) {
-                        apply = false
-                         currentBuild.result = 'UNSTABLE'
-                    }
-                    if(apply){
-                        dir('terraform/'){
-
-                            sh 'terraform destroy'
-                        }
-                    }
-                }
-            }
-        }
     }
+
 }
 
