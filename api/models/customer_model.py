@@ -43,10 +43,6 @@ class CustomerModel(db.Model):
                     self.country_of_birth,'customer_segment':self.customer_segment
                 }
 
-    @classmethod
-    def find_by_customer_number(cls, cust_no):
-        return cls.query.filter_by(cust_no=cust_no).first()
-
     def save_to_db(self):
         db.session.add(self)
         db.session.commit()
@@ -58,3 +54,8 @@ class CustomerModel(db.Model):
     def delete_from_db(self):
         db.session.delete(self)
         db.session.commit()
+
+    @classmethod
+    def find_by_customer_number(cls, cust_no):
+        return cls.query.filter_by(cust_no=cust_no).first()
+

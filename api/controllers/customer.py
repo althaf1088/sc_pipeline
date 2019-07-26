@@ -1,4 +1,4 @@
-from models.customer_model import CustomerModel
+from models.customer_model import CustomerModel as CustomerModel
 from db import db
 from flask import request
 from flask_restplus import Namespace, Resource, fields
@@ -28,10 +28,10 @@ address_model = ns.model('address', {
 })
 
 customer_model = ns.model('customer', {
-    'first_name': fields.String(required=False),
+    'first_name': fields.String(required=True),
     'middle_name': fields.String(required=False,
                                   description='Middle Name'),
-    'last_name': fields.String(required=False,
+    'last_name': fields.String(required=True,
                                       description='Last Name'),
     'date_of_birth': fields.String(required=False,
                                          description='Date of Birth'),
