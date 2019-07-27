@@ -1,5 +1,5 @@
 ---
-- hosts: nodes
+- hosts: web
   remote_user: ec2-user
   tasks:
   - name: install the latest version of Apache
