@@ -55,7 +55,7 @@ pipeline {
                     }
                 }
             }
-            stage('TerraformApply'){
+            stage('GETEC2IP'){
                 steps {
                     sh 'terraform output >> hosts'
                 }
