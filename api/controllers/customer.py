@@ -1,7 +1,8 @@
 from models.customer_model import CustomerModel as CustomerModel
 from db import db
-from flask import request
+from flask import request, jsonify, make_response
 from flask_restplus import Namespace, Resource, fields
+from flask_cors import cross_origin
 
 ns = Namespace("Customer", description="Customer API", path="/customer")
 
@@ -52,15 +53,18 @@ parser.add_argument("cust_no", type=str, required=True, help='cust_no',
                     location='form')
 
 @ns.route("/")
+
 class Customer(Resource):
     @ns.expect(customer_model, validate=True)
+    @cross_origin()
     def post(self, **kwargs):
         data_json = request.get_json()
         customer = CustomerModel(**data_json)
         customer.save_to_db()
-        return 200
+        return self.add_headers(make_response()), 200
 
     @ns.expect(customer_model, validate=True)
+    @cross_origin()
     def put(self, **kwargs):
         data_json = request.get_json()
         customermodel = CustomerModel.find_by_customer_number(data_json['cust_no'])
@@ -69,15 +73,27 @@ class Customer(Resource):
         else:
             customermodel.first_name = data_json['first_name']
             customermodel.save_to_db()
-        return 200
+        return self.add_headers(make_response()), 200
 
     @ns.doc(parser=parser)
+    @cross_origin()
     def delete(self, **kwargs):
         args = parser.parse_args()
 
         customermodel = CustomerModel.find_by_customer_number(args['cust_no'])
         customermodel.delete_from_db()
-        return 200
+        return self.add_headers(make_response()), 200
 
+    @cross_origin()
     def get(self, **kwargs):
-        return {'customers': list(map(lambda x: x.json(), CustomerModel.query.all()))}
+        response = make_response()
+        response = jsonify({'customers': list(map(lambda x: x.json(),
+                                                CustomerModel.query.all()))})
+        return response, 200
+
+
+    def add_headers(self, response):
+        response.headers.add("Access-Control-Allow-Origin", "*")
+        response.headers.add('Access-Control-Allow-Headers', "*")
+        response.headers.add('Access-Control-Allow-Methods', "*")
+        return response

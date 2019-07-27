@@ -10,7 +10,7 @@ app.config['SQLALCHEMY_DATABASE_URI'] = os.environ['DATABASE_URL']
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['PROPAGATE_EXCEPTIONS'] = True
 app.secret_key = '123star'
-CORS(app)
+CORS(app, resources={r"*"})
 
 blueprint = Blueprint("api", __name__, )
 
