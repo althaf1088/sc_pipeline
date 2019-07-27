@@ -21,7 +21,7 @@ resource "aws_instance" "webservers" {
             command = <<EOD
         cat <<EOF > aws_hosts
         [web]
-        ${aws_instance.webservers.public_ip}
+        ${aws_instance.webservers.public_ip} ansible_user=ec2-user
         EOF
         EOD
           }
