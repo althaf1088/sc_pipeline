@@ -23,3 +23,12 @@ variable "webservers_ami" {
 variable "instance_type" {
   default = "t2.nano"
 }
+
+variable "key_name"{
+  default = "sc_deploy"
+}
+
+variable "public_key_path" {
+  default = "/var/lib/jenkins/.ssh/sc_deploy.pub"
+}
+

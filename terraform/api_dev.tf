@@ -1,5 +1,13 @@
+#key pair
+
+resource "aws_key_pair" "wp_auth" {
+  key_name   = "${var.key_name}"
+  public_key = "${file(var.public_key_path)}"
+}
+
 resource "aws_instance" "webservers" {
   ami = "${var.webservers_ami}"
+  key_name = "${aws_key_pair.wp_auth.id}"
   instance_type = "${var.instance_type}"
   security_groups = [
     "${aws_security_group.webservers.id}"]
