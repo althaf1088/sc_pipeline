@@ -19,7 +19,7 @@ pipeline {
                 checkout([$class: 'GitSCM', branches: [[name: '*/master']], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[url: 'https://github.com/althaf1088/sc_pipeline']]])
                 }
              }
-           /*  stage('TerraformPlan'){
+            stage('TerraformPlan'){
                 steps {
                     dir('terraform/'){
                         script {
@@ -55,8 +55,8 @@ pipeline {
                         }
                     }
                 }
-            }*/
-           stage('TerraformDelete'){
+            }
+          /* stage('TerraformDelete'){
             steps {
                 script{
                     def apply = false
@@ -75,7 +75,7 @@ pipeline {
                     }
                 }
             }
-        }
+        }*/
 
 
          /*    stage('Ansible'){
