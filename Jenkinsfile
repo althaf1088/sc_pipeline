@@ -57,9 +57,14 @@ pipeline {
             }*/
             stage('GETEC2IP'){
                 steps {
-                    sh label: '', script: '''terraform output >> hosts
-                '''
-                }
+                    script{
+                            dir('terraform/'){
+                                sh 'terraform output >> hosts'
+                            }
+                        }
+                    }
+
+
             }
 
          /*    stage('Ansible'){
