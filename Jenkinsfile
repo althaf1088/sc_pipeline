@@ -19,7 +19,7 @@ pipeline {
                 checkout([$class: 'GitSCM', branches: [[name: '*/master']], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[url: 'https://github.com/althaf1088/sc_pipeline']]])
                 }
              }
-              stage('TerraformPlan'){
+       /*       stage('TerraformPlan'){
                 steps {
                     dir('terraform/'){
                         script {
@@ -34,8 +34,8 @@ pipeline {
                         }
                     }
                 }
-            }
-            stage('TerraformApply'){
+            } */
+           /* stage('TerraformApply'){
                 steps {
                     script{
                         def apply = false
@@ -55,7 +55,27 @@ pipeline {
                         }
                     }
                 }
+            } */
+            stage('TerraformDelete'){
+            steps {
+                script{
+                    def apply = false
+                    try {
+                        input message: 'Can you please confirm the apply', ok: 'Ready to delete'
+                        apply = true
+                    } catch (err) {
+                        apply = false
+                         currentBuild.result = 'UNSTABLE'
+                    }
+                    if(apply){
+                        dir('terraform/'){
+
+                            sh 'terraform destroy'
+                        }
+                    }
+                }
             }
+        }
 
 
          /*    stage('Ansible'){
