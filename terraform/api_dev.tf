@@ -29,6 +29,18 @@ resource "aws_instance" "webservers" {
   }
 }
 
+#AMI
+
+resource "random_id" "golden_ami" {
+  byte_length = 8
+}
+
+resource "aws_ami_from_instance" "wp_golden" {
+  name               = "wp_ami-${random_id.golden_ami.b64}"
+  source_instance_id = "${aws_instance.webservers.id}"
+
+}
+
 
 
 
