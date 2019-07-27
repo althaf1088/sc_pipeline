@@ -4,7 +4,7 @@
   tasks:
   - name: install the latest version of Apache
     yum:
-      name: python3
+      name: python36
       state: latest
     become: yes
   - name: Ansible copy directory to the remote server
