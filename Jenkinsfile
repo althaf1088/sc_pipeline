@@ -19,7 +19,7 @@ pipeline {
                 checkout([$class: 'GitSCM', branches: [[name: '*/master']], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[url: 'https://github.com/althaf1088/sc_pipeline']]])
                 }
              }
-             /*  stage('TerraformPlan'){
+              stage('TerraformPlan'){
                 steps {
                     dir('terraform/'){
                         script {
@@ -50,22 +50,13 @@ pipeline {
                             dir('terraform/'){
                                 unstash "terraform-plan"
                                 sh 'terraform apply terraform.tfplan'
-                            }
-                        }
-                    }
-                }
-            }*/
-            stage('GETEC2IP'){
-                steps {
-                    script{
-                            dir('terraform/'){
                                 sh 'terraform output >> hosts'
                             }
                         }
                     }
-
-
+                }
             }
+
 
          /*    stage('Ansible'){
             steps{
