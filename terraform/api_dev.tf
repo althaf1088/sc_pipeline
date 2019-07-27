@@ -102,6 +102,7 @@ resource "aws_autoscaling_group" "terra_web_asg" {
   desired_capacity          = 2
   force_delete              = true
   load_balancers            = ["${aws_elb.terra_elb.id}"]
+  availability_zones   = ["${element(var.azs,count.index)}"]
 
 
 
