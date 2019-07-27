@@ -41,4 +41,17 @@ resource "aws_ami_from_instance" "wp_golden" {
 
 
 
+## Creating Launch Configuration
+resource "aws_launch_configuration" "terra_web" {
+  name_prefix     = "sc_lc-"
+  image_id        = "${aws_ami_from_instance.wp_golden.id}"
+  instance_type   = "t2.micro"
+  security_groups = ["${aws_security_group.webservers.id}"]
+  user_data       = "${file("user_data.sh")}"
+  key_name        = "${aws_key_pair.wp_auth.id}"
+
+  lifecycle {
+    create_before_destroy = true
+  }
+}
 
