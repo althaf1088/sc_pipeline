@@ -12,6 +12,6 @@ resource "aws_instance" "webservers" {
   }
 }
   output "ec2_web" {
-  value = ["${aws_instance.main.*.public_ip}"]
+  value = ["${aws_instance.webservers.*.public_ip}"]
 }
 
