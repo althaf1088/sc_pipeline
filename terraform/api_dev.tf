@@ -13,6 +13,7 @@ resource "aws_instance" "webservers" {
     "${aws_security_group.webservers.id}"]
   subnet_id = "${element(aws_subnet.public.*.id,count.index)}"
   user_data = "${file("user_data.sh")}"
+  associate_public_ip_address = true
 
   tags {
     Name = "devServer"
