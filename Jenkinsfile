@@ -20,35 +20,12 @@ pipeline {
                 }
              }
 
-            stage('TerraformInit'){
-            steps {
-                dir('terraform/'){
-                    sh "terraform init -input=false"
-                    sh "echo \$PWD"
-                    sh "whoami"
-                }
+             stage('Ansible'){
+            steps{
+                ansiblePlaybook credentialsId: 'jenkins', installation: 'ansible', playbook: '${params.WORKSPACE}/ansible/python3.yml'
             }
-        }
-            stage('TerraformDelete'){
-            steps {
-                script{
-                    def apply = false
-                    try {
-                        input message: 'Can you please confirm the apply', ok: 'Ready to delete'
-                        apply = true
-                    } catch (err) {
-                        apply = false
-                         currentBuild.result = 'UNSTABLE'
-                    }
-                    if(apply){
-                        dir('terraform/'){
+            }
 
-                            sh 'terraform destroy -auto-approve'
-                        }
-                    }
-                }
-            }
-        }
 
     }
 
