@@ -18,7 +18,7 @@ resource "aws_instance" "webservers" {
         EOD
           }
   provisioner "local-exec" {
-    command = "aws ec2 wait instance-status-ok --instance-ids ${aws_instance.webservers.id}"
+    command = "env"
   }
 }
 
