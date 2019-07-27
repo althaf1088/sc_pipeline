@@ -22,7 +22,6 @@ resource "aws_instance" "webservers" {
         cat <<EOF > aws_hosts
         [web]
         ${aws_instance.webservers.public_ip} ansible_user=ec2-user
-        EOF
         EOD
           }
   provisioner "local-exec" {
