@@ -1,0 +1,30 @@
+---
+- hosts: nodes
+  remote_user: ec2-user
+  tasks:
+  - name: install the latest version of Apache
+    yum:
+      name: python3
+      state: latest
+    become: yes
+  - name: Ansible copy directory to the remote server
+    copy:
+      src: ../api
+      dest: /home/ec2-user
+  - name: Install virtualenv via pip
+    pip:
+      name: virtualenv
+      executable: pip3
+    become: yes
+    become_user: root
+  - name: install requirements.txt
+    pip:
+      requirements: /home/ec2-user/api/requirements.txt
+      virtualenv: /home/ec2-user/flask
+      virtualenv_python: python3
+  - name: Start the app
+    shell: |
+      source /home/ec2-user/flask/bin/activate
+      cd /home/ec2-user/api
+      export DATABASE_URL="postgresql://postgres:123nextstar@database-1.cxwoepvqqboq.us-east-2.rds.amazonaws.com:5432/postgres"
+      gunicorn -b "0.0.0.0:8000" run:app --daemon
