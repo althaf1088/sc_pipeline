@@ -22,7 +22,7 @@ pipeline {
 
              stage('Ansible'){
             steps{
-                ansiblePlaybook credentialsId: 'jenkins', installation: 'ansible', playbook: '${params.WORKSPACE}/ansible/python3.yml'
+                ansiblePlaybook credentialsId: 'jenkins', installation: 'ansible', playbook: 'ansible/python3.yml'
             }
             }
 
