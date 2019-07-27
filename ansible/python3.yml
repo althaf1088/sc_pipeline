@@ -9,7 +9,7 @@
     become: yes
   - name: Ansible copy directory to the remote server
     copy:
-      src: api
+      src: ../api
       dest: /home/ec2-user
   - name: Install virtualenv via pip
     pip:
