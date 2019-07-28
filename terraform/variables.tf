@@ -24,7 +24,7 @@ variable "instance_type" {
   default = "t2.nano"
 }
 
-variable "key_name"{
+variable "key_name" {
   default = "sc_deploy"
 }
 
@@ -43,4 +43,3 @@ variable "asg_min" {
 variable "asg_desired" {
   default = 1
 }
-

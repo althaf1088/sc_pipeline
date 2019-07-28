@@ -6,24 +6,29 @@ resource "aws_key_pair" "wp_auth" {
 }
 
 resource "aws_instance" "webservers" {
-  ami = "${var.webservers_ami}"
-  key_name = "${aws_key_pair.wp_auth.id}"
+  ami           = "${var.webservers_ami}"
+  key_name      = "${aws_key_pair.wp_auth.id}"
   instance_type = "${var.instance_type}"
+
   security_groups = [
-    "${aws_security_group.webservers.id}"]
-  subnet_id = "${element(aws_subnet.public.*.id,count.index)}"
+    "${aws_security_group.webservers.id}",
+  ]
+
+  subnet_id                   = "${element(aws_subnet.public.*.id,count.index)}"
   associate_public_ip_address = true
 
   tags {
     Name = "devServer"
   }
+
   provisioner "local-exec" {
-            command = <<EOD
+    command = <<EOD
         cat <<EOF > aws_hosts
         [web]
         ${aws_instance.webservers.public_ip} ansible_user=ec2-user
         EOD
-          }
+  }
+
   provisioner "local-exec" {
     command = "aws ec2 wait instance-status-ok --instance-ids ${aws_instance.webservers.id}  && ansible-playbook -e host_key_checking=False -i aws_hosts app_deploy.yml --private-key=~/.ssh/sc_deploy "
   }
@@ -32,8 +37,7 @@ resource "aws_instance" "webservers" {
 #load balancer
 
 resource "aws_elb" "terra_elb" {
-
-  subnets         = ["${aws_subnet.public.*.id}"]
+  subnets = ["${aws_subnet.public.*.id}"]
 
   security_groups = ["${aws_security_group.webservers.id}"]
 
@@ -68,19 +72,16 @@ resource "aws_elb" "terra_elb" {
 resource "aws_ami_from_instance" "wp_golden" {
   name               = "sc-ami-8ff1a83510f10f167"
   source_instance_id = "${aws_instance.webservers.id}"
-
 }
-
-
 
 ## Creating Launch Configuration
 resource "aws_launch_configuration" "terra_web_lc" {
-  name_prefix     = "sc_lc-"
-  image_id        = "${aws_ami_from_instance.wp_golden.id}"
-  instance_type   = "t2.micro"
-  security_groups = ["${aws_security_group.webservers.id}"]
-  user_data       = "${file("user_data.sh")}"
-  key_name        = "${aws_key_pair.wp_auth.id}"
+  name_prefix                 = "sc_lc-"
+  image_id                    = "${aws_ami_from_instance.wp_golden.id}"
+  instance_type               = "t2.micro"
+  security_groups             = ["${aws_security_group.webservers.id}"]
+  user_data                   = "${file("user_data.sh")}"
+  key_name                    = "${aws_key_pair.wp_auth.id}"
   associate_public_ip_address = true
 
   lifecycle {
@@ -103,7 +104,7 @@ resource "aws_autoscaling_group" "terra_web_asg" {
   desired_capacity          = "${var.asg_desired}"
   force_delete              = true
   load_balancers            = ["${aws_elb.terra_elb.id}"]
-  availability_zones   = ["${element(var.azs,count.index)}"]
+  availability_zones        = ["${element(var.azs,count.index)}"]
 
   vpc_zone_identifier = ["${aws_subnet.public.*.id}"]
 
@@ -119,5 +120,3 @@ resource "aws_autoscaling_group" "terra_web_asg" {
     create_before_destroy = true
   }
 }
-
-
