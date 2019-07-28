@@ -66,11 +66,15 @@ resource "aws_elb" "terra_elb" {
   }
 }
 
+output "elb-dns-name" {
+  value = "${aws_elb.terra_elb.dns_name}"
+}
+
 #Please change AMI no since random provider is not installed
 
 #AMI
 resource "aws_ami_from_instance" "wp_golden" {
-  name               = "sc-ami-8ff1a83510f10f167"
+  name               = "sc-web-8ff1a83510f10f117"
   source_instance_id = "${aws_instance.webservers.id}"
 }
 

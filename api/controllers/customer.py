@@ -102,8 +102,9 @@ class Customer(Resource):
 @ns.route("/customers")
 class CustomerList(Resource):
     def get(self, **kwargs):
-        response = jsonify({'customers': list(map(lambda x: x.json(),
-                                                  CustomerModel.query.all()))})
+
+        response = {'customers': list(map(lambda x: x.json(),
+                                                  CustomerModel.query.all()))}
         return response, 200
 
 
