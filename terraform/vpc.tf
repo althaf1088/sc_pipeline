@@ -66,14 +66,14 @@ resource "aws_security_group" "webservers" {
   vpc_id      = "${aws_vpc.terra_vpc.id}"
 
   ingress {
-    from_port   = 80
+    from_port   = 8000
     to_port     = 8000
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
   }
 
   ingress {
-    from_port   = 0
+    from_port   = 5432
     to_port     = 5432
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]

@@ -33,7 +33,7 @@ variable "public_key_path" {
 }
 
 variable "asg_max" {
-  default = 2
+  default = 3
 }
 
 variable "asg_min" {
@@ -41,5 +41,5 @@ variable "asg_min" {
 }
 
 variable "asg_desired" {
-  default = 1
+  default = 3
 }

@@ -74,7 +74,7 @@ output "elb-dns-name" {
 
 #AMI
 resource "aws_ami_from_instance" "wp_golden" {
-  name               = "sc-web-8ff1a83510f10f117"
+  name               = "sc-web-8ff1a83510f10f118"
   source_instance_id = "${aws_instance.webservers.id}"
 }
 
