@@ -34,7 +34,7 @@ resource "aws_instance" "webservers" {
 
 resource "aws_elb" "terra_elb" {
 
-
+  availability_zones = ["${var.azs}"]
   subnets         = ["${aws_subnet.public.*.id}"]
 
   security_groups = ["${aws_security_group.webservers.id}"]

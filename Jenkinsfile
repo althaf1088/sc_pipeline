@@ -21,7 +21,7 @@ pipeline {
                 checkout([$class: 'GitSCM', branches: [[name: '*/master']], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[url: 'https://github.com/althaf1088/sc_pipeline']]])
                 }
              }
-            stage('TerraformDelete'){
+            /*stage('TerraformDelete'){
             steps {
                 script{
                     def apply = false
@@ -40,8 +40,17 @@ pipeline {
                     }
                 }
             }
+            }*/
+            stage('TerraformInit'){
+            steps {
+                dir('terraform/'){
+                    sh "terraform init -input=false"
+                    sh "echo \$PWD"
+                    sh "whoami"
+                }
             }
-           /* stage('TerraformPlan'){
+             }
+            stage('TerraformPlan'){
                 steps {
                     dir('terraform/'){
                         script {
@@ -78,7 +87,7 @@ pipeline {
                         }
                     }
                 }
-            }*/
+            }
           /* stage('TerraformDelete'){
             steps {
                 script{
