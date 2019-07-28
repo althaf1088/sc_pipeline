@@ -29,7 +29,7 @@ resource "aws_subnet" "public" {
   }
 }
 
-resource "aws_subnet_group" "sc_subnetgroup" {
+resource "aws_db_subnet_group" "sc_subnetgroup" {
   name = "sc_subnetgroup"
 
   subnet_ids = ["${aws_subnet.public.*.id}"]
@@ -102,7 +102,7 @@ resource "aws_db_instance" "wp_db" {
   name                   = "sc"
   username               = "postgres"
   password               = "123nextstar"
-  db_subnet_group_name   = "${aws_subnet_group.sc_subnetgroup.name}"
+  db_subnet_group_name   = "${aws_db_subnet_group.sc_subnetgroup.name}"
   vpc_security_group_ids = ["${aws_security_group.webservers.id}"]
   skip_final_snapshot    = true
 }
