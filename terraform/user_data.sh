@@ -1,5 +1,6 @@
-#! /bin/bash
+#!/bin/bash
 sudo yum update
+cd /home/ec2-user/
 source flask/bin/activate
 cd /home/ec2-user/api
 export DATABASE_URL="postgresql://postgres:123nextstar@database-1.cxwoepvqqboq.us-east-2.rds.amazonaws.com:5432/postgres"
