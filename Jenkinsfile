@@ -81,7 +81,7 @@ pipeline {
                             dir('terraform/'){
                                 unstash "terraform-plan"
                                 sh 'terraform apply terraform.tfplan'
-                                sh 'terraform output  >> hosts'
+
 
                             }
                         }
