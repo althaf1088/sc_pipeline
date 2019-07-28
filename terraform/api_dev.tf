@@ -39,9 +39,9 @@ resource "aws_elb" "terra_elb" {
   security_groups = ["${aws_security_group.webservers.id}"]
 
   listener {
-    instance_port     = 80
+    instance_port     = 8000
     instance_protocol = "http"
-    lb_port           = 80
+    lb_port           = 8000
     lb_protocol       = "http"
   }
 
@@ -49,7 +49,7 @@ resource "aws_elb" "terra_elb" {
     healthy_threshold   = 2
     unhealthy_threshold = 2
     timeout             = 3
-    target              = "TCP:80"
+    target              = "TCP:8000"
     interval            = 30
   }
 
