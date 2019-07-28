@@ -29,6 +29,16 @@ resource "aws_subnet" "public" {
   }
 }
 
+resource "aws_subnet_group" "sc_subnetgroup" {
+  name = "sc_subnetgroup"
+
+  subnet_ids = ["${aws_subnet.public.*.id}"]
+
+  tags {
+    Name = "sc_subnet_group"
+  }
+}
+
 # Route table: attach Internet Gateway
 resource "aws_route_table" "public_rt" {
   vpc_id = "${aws_vpc.terra_vpc.id}"
@@ -57,7 +67,14 @@ resource "aws_security_group" "webservers" {
 
   ingress {
     from_port   = 80
-    to_port     = 80
+    to_port     = 8000
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  ingress {
+    from_port   = 0
+    to_port     = 5432
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
   }
@@ -75,4 +92,17 @@ resource "aws_security_group" "webservers" {
     protocol    = "-1"
     cidr_blocks = ["0.0.0.0/0"]
   }
+}
+
+resource "aws_db_instance" "wp_db" {
+  allocated_storage      = 10
+  engine                 = "postgres"
+  engine_version         = "10.6"
+  instance_class         = "db.t2.micro"
+  name                   = "sc"
+  username               = "postgres"
+  password               = "123nextstar"
+  db_subnet_group_name   = "${aws_subnet_group.sc_subnetgroup.name}"
+  vpc_security_group_ids = ["${aws_security_group.webservers.id}"]
+  skip_final_snapshot    = true
 }
