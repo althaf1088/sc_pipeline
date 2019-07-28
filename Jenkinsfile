@@ -40,6 +40,7 @@ pipeline {
                     }
                 }
             }
+            }
             stage('TerraformPlan'){
                 steps {
                     dir('terraform/'){
