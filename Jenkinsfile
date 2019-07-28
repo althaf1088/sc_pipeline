@@ -41,7 +41,7 @@ pipeline {
                 }
             }
             }
-            stage('TerraformPlan'){
+           /* stage('TerraformPlan'){
                 steps {
                     dir('terraform/'){
                         script {
@@ -78,7 +78,7 @@ pipeline {
                         }
                     }
                 }
-            }
+            }*/
           /* stage('TerraformDelete'){
             steps {
                 script{
