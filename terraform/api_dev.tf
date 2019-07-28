@@ -65,7 +65,7 @@ resource "aws_elb" "terra_elb" {
 
 #AMI
 resource "aws_ami_from_instance" "wp_golden" {
-  name               = "sc-ami-8ff1a81517f17f067"
+  name               = "sc-ami-8ff1a82517f17f167"
   source_instance_id = "${aws_instance.webservers.id}"
 
 }
