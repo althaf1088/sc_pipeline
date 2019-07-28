@@ -65,7 +65,7 @@ resource "aws_elb" "terra_elb" {
 
 #AMI
 resource "aws_ami_from_instance" "wp_golden" {
-  name               = "sc-ami-8ff8a11517f17f867"
+  name               = "sc-ami-8ff1a11517f17f867"
   source_instance_id = "${aws_instance.webservers.id}"
 
 }
@@ -80,6 +80,7 @@ resource "aws_launch_configuration" "terra_web_lc" {
   security_groups = ["${aws_security_group.webservers.id}"]
   user_data       = "${file("user_data.sh")}"
   key_name        = "${aws_key_pair.wp_auth.id}"
+  associate_public_ip_address = true
 
   lifecycle {
     create_before_destroy = true
