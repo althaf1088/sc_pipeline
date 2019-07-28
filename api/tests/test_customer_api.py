@@ -3,7 +3,7 @@ from app import app
 from unittest import mock
 import json
 
-class test_health(unittest.TestCase):
+class test_customer(unittest.TestCase):
 
     def setUp(self):
         self.app = app
@@ -12,7 +12,7 @@ class test_health(unittest.TestCase):
         ctx.push()
 
     def test_get_customers(self):
-            res = self.client.get("/customer/")
+            res = self.client.get("/customers")
             self.assertEqual(res.status_code, 500)
 
 
@@ -42,7 +42,7 @@ class test_health(unittest.TestCase):
         }
         with mock.patch("controllers.customer.CustomerModel.save_to_db",
                            return_value=None):
-            res = self.client.post("/customer/", data=json.dumps(valid_data),content_type='application/json')
+            res = self.client.post("/customer", data=json.dumps(valid_data),content_type='application/json')
             self.assertEqual(res.status_code, 200)
 
 
@@ -71,7 +71,7 @@ class test_health(unittest.TestCase):
         }
         with mock.patch("controllers.customer.CustomerModel.save_to_db",
                            return_value=None):
-            res = self.client.post("/customer/", data=json.dumps(valid_data),content_type='application/json')
+            res = self.client.post("/customer", data=json.dumps(valid_data),content_type='application/json')
             self.assertEqual(res.status_code, 400)
 
     def test_post_customers_fail2_no_first_name(self):
@@ -100,7 +100,7 @@ class test_health(unittest.TestCase):
         }
         with mock.patch("controllers.customer.CustomerModel.save_to_db",
                            return_value=None):
-            res = self.client.post("/customer/", data=json.dumps(valid_data),content_type='application/json')
+            res = self.client.post("/customer", data=json.dumps(valid_data),content_type='application/json')
             self.assertEqual(res.status_code, 400)
 
     # def test_put_customers_valid(self):

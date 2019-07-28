@@ -1,10 +1,12 @@
 from models.customer_model import CustomerModel as CustomerModel
-from db import db
+import logging
 from flask import request, jsonify, make_response
 from flask_restplus import Namespace, Resource, fields
 from flask_cors import cross_origin
+import json
+from sqlalchemy.exc import IntegrityError
 
-ns = Namespace("Customer", description="Customer API", path="/customer")
+ns = Namespace("Customer", description="Customer API", path="/")
 
 
 
@@ -52,48 +54,72 @@ parser = ns.parser()
 parser.add_argument("cust_no", type=str, required=True, help='cust_no',
                     location='form')
 
-@ns.route("/")
+@ns.route("/customer")
 
 class Customer(Resource):
     @ns.expect(customer_model, validate=True)
-    @cross_origin()
     def post(self, **kwargs):
         data_json = request.get_json()
         customer = CustomerModel(**data_json)
-        customer.save_to_db()
-        return self.add_headers(make_response()), 200
+        try:
+            customer.save_to_db()
+        except IntegrityError as err:
+            logging.warning("Customer number already exists {} ".format(data_json[
+                                                                  'cust_no']))
+            return 409
+        except Exception as e:
+            logging.error("Error occured while saving {} ".format(data_json[
+                'cust_no'] ))
+            return 500
+        return 200
 
     @ns.expect(customer_model, validate=True)
-    @cross_origin()
     def put(self, **kwargs):
         data_json = request.get_json()
         customermodel = CustomerModel.find_by_customer_number(data_json['cust_no'])
         if customermodel is None:
-            return 404
+            return  404
         else:
             customermodel.first_name = data_json['first_name']
             customermodel.save_to_db()
-        return self.add_headers(make_response()), 200
+        return  200
 
     @ns.doc(parser=parser)
-    @cross_origin()
     def delete(self, **kwargs):
         args = parser.parse_args()
+        try:
+            customermodel = CustomerModel.find_by_customer_number(args['cust_no'])
+            if customermodel is None:
+                logging.warning("Customer number not present {}".format(args['cust_no']))
+                return  404
+            customermodel.delete_from_db()
+        except Exception as e:
+            logging.error("Error occured while saving {} ".format(args[
+                'cust_no'] ))
+            return  500
 
-        customermodel = CustomerModel.find_by_customer_number(args['cust_no'])
-        customermodel.delete_from_db()
-        return self.add_headers(make_response()), 200
+        return  200
 
-    @cross_origin()
+
+
+
+@ns.route("/customers")
+class CustomerList(Resource):
     def get(self, **kwargs):
-        response = make_response()
         response = jsonify({'customers': list(map(lambda x: x.json(),
-                                                CustomerModel.query.all()))})
+                                                  CustomerModel.query.all()))})
         return response, 200
 
+@ns.route("/customer/<string:cust_no>")
+class Customer(Resource):
 
-    def add_headers(self, response):
-        response.headers.add("Access-Control-Allow-Origin", "*")
-        response.headers.add('Access-Control-Allow-Headers', "*")
-        response.headers.add('Access-Control-Allow-Methods', "*")
-        return response
+    def get(self, cust_no, **kwargs):
+        try:
+            customermodel = CustomerModel.find_by_customer_number(cust_no)
+            if customermodel is None:
+                logging.warning("Customer number not present {}".format(cust_no))
+                return 404
+        except Exception as e:
+            logging.error("Error occured while saving {} ".format(cust_no))
+            return 500
+        return customermodel.json(), 200

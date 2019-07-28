@@ -25,7 +25,7 @@ resource "aws_instance" "webservers" {
         EOD
           }
   provisioner "local-exec" {
-    command = "aws ec2 wait instance-status-ok --instance-ids ${aws_instance.webservers.id}  && ansible-playbook -e host_key_checking=False -i aws_hosts python3.yml --private-key=~/.ssh/sc_deploy "
+    command = "aws ec2 wait instance-status-ok --instance-ids ${aws_instance.webservers.id}  && ansible-playbook -e host_key_checking=False -i aws_hosts app_deploy.yml --private-key=~/.ssh/sc_deploy "
   }
 }
 
@@ -62,10 +62,11 @@ resource "aws_elb" "terra_elb" {
   }
 }
 
+#Please change AMI no since random provider is not installed
 
 #AMI
 resource "aws_ami_from_instance" "wp_golden" {
-  name               = "sc-ami-8ff1a83510f17f167"
+  name               = "sc-ami-8ff1a83510f10f167"
   source_instance_id = "${aws_instance.webservers.id}"
 
 }
@@ -95,11 +96,11 @@ resource "aws_launch_configuration" "terra_web_lc" {
 
 resource "aws_autoscaling_group" "terra_web_asg" {
   name                      = "asg-${aws_launch_configuration.terra_web_lc.id}"
-  max_size                  = 2
-  min_size                  = 1
+  max_size                  = "${var.asg_max}"
+  min_size                  = "${var.asg_min}"
   health_check_grace_period = "300"
   health_check_type         = "EC2"
-  desired_capacity          = 2
+  desired_capacity          = "${var.asg_desired}"
   force_delete              = true
   load_balancers            = ["${aws_elb.terra_elb.id}"]
   availability_zones   = ["${element(var.azs,count.index)}"]

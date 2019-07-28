@@ -32,3 +32,15 @@ variable "public_key_path" {
   default = "/var/lib/jenkins/.ssh/sc_deploy.pub"
 }
 
+variable "asg_max" {
+  default = 2
+}
+
+variable "asg_min" {
+  default = 1
+}
+
+variable "asg_desired" {
+  default = 1
+}
+
