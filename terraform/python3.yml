@@ -27,4 +27,4 @@
       source /home/ec2-user/flask/bin/activate
       cd /home/ec2-user/api
       export DATABASE_URL="postgresql://postgres:123nextstar@database-1.cxwoepvqqboq.us-east-2.rds.amazonaws.com:5432/postgres"
-      gunicorn -b "0.0.0.0:8000" run:app --daemon
+      gunicorn -w 1 --max-requests 20 --timeout 300000 -b 0.0.0.0:8000 --user ec2-user run:app --daemon
