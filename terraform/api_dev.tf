@@ -65,7 +65,7 @@ resource "aws_elb" "terra_elb" {
 
 #AMI
 resource "aws_ami_from_instance" "wp_golden" {
-  name               = "sc-ami-8ff1a81517f17f867"
+  name               = "sc-ami-8ff1a81517f17f067"
   source_instance_id = "${aws_instance.webservers.id}"
 
 }
@@ -95,11 +95,11 @@ resource "aws_launch_configuration" "terra_web_lc" {
 
 resource "aws_autoscaling_group" "terra_web_asg" {
   name                      = "asg-${aws_launch_configuration.terra_web_lc.id}"
-  max_size                  = 2
+  max_size                  = 1
   min_size                  = 1
   health_check_grace_period = "300"
   health_check_type         = "EC2"
-  desired_capacity          = 2
+  desired_capacity          = 1
   force_delete              = true
   load_balancers            = ["${aws_elb.terra_elb.id}"]
   availability_zones   = ["${element(var.azs,count.index)}"]
