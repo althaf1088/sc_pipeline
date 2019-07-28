@@ -2,12 +2,12 @@
 - hosts: web
   remote_user: ec2-user
   tasks:
-  - name: install the latest version of Apache
+  - name: install python
     yum:
       name: python36
       state: latest
     become: yes
-  - name: Ansible copy directory to the remote server
+  - name: Ansible copy build to the remote server
     copy:
       src: ../api
       dest: /home/ec2-user
