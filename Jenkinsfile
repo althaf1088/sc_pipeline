@@ -26,7 +26,7 @@ pipeline {
                 sh 'echo "Skipping Unit test"'
                 }
              }
-           /* stage('TerraformDelete'){
+           stage('TerraformDelete'){
             steps {
                 script{
                     def apply = false
@@ -45,8 +45,8 @@ pipeline {
                     }
                 }
             }
-            }*/
-            stage('TerraformInit'){
+            }
+          /*  stage('TerraformInit'){
             steps {
                 dir('terraform/'){
                     sh "terraform init -input=false"
@@ -92,7 +92,7 @@ pipeline {
                         }
                     }
                 }
-            }
+            }*/
           /* stage('TerraformDelete'){
             steps {
                 script{
